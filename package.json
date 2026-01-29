@@ -1,39 +1,24 @@
 {
+    "name": "ia-project-frontend",
+    "version": "1.0.0",
     "scripts": {
-      "start": "node src/index.js",
-      "lint": "eslint src --max-warnings=0",
+      "start": "node index.js",
+      "lint": "eslint . --max-warnings=0",
       "prepare": "husky",
       "test": "vitest run",
       "test:e2e": "vitest run --config vitest.e2e.config.js"
     },
     "devDependencies": {
-      "eslint": "*",
+      "eslint": "^9.0.0",
       "globals": "^16.4.0",
-      "husky": "*",
-      "lint-staged": "*",
-      "release-it": "*",
+      "husky": "^9.0.0",
+      "lint-staged": "^15.0.0",
+      "release-it": "^17.0.0",
       "supertest": "^7.1.4",
-      "vitest": "*"
-    },
-    "lint-staged": {
-      "src/**/*.js": [
-        "eslint --max-warnings=0",
-        "vitest run --passWithNoTests"
-      ]
-    },
-    "release-it": {
-      "npm": false,
-      "git": {
-        "commitMessage": "Release v${version}",
-        "tagName": "v${version}",
-        "requireCleanWorkingDir": true,
-        "requireBranch": "main",
-        "push": true
-      }
+      "vitest": "^2.0.0"
     },
     "dependencies": {
       "@google/generative-ai": "^0.21.0",
-      "express": "^5.1.0"
+      "express": "^4.19.0"
     }
   }
-  

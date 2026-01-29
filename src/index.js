@@ -1,37 +1,41 @@
 const express = require("express");
+const path = require("path");
 const auth = require("./modules/authentication");
-// 1. Importation du SDK Google Generative AI
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const app = express();
 
-// Middleware indispensable pour lire le JSON dans les requêtes POST
+// Middleware pour lire le JSON
 app.use(express.json());
 
+// --- NOUVEAUTÉ EXERCICE 2 : SERVIR LE FRONTEND ---
+// Cette route envoie le fichier index.html quand on accède à l'URL racine
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
+// Route d'authentification (Exo précédent)
 app.get("/auth/:secret", (req, res) => {
   const { secret } = req.params;
   const response = auth(secret);
   res.status(response.status).send(response.message);
 });
 
-// 2. Nouvelle route pour l'IA Gemini
+// --- ROUTE API POUR LE CHATBOT ---
 app.post("/ask", async (req, res) => {
   try {
     const { prompt } = req.body;
     
     if (!process.env.GOOGLE_API_KEY) {
-      return res.status(500).json({ error: "Clé API manquante dans les variables CI/CD" });
+      return res.status(500).json({ error: "Clé API manquante sur le serveur" });
     }
 
-    // Initialisation de l'IA
+    // Initialisation Gemini
     const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-lite" });
+    // Utilisation d'un modèle rapide et léger
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const result = await model.generateContent(prompt || "Dis-moi quelque chose d'intéressant sur l'IA.");
+    const result = await model.generateContent(prompt || "Dis bonjour !");
     const response = await result.response;
     
     res.json({ 
@@ -39,15 +43,16 @@ app.post("/ask", async (req, res) => {
       reply: response.text() 
     });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.error("Erreur IA:", error);
+    res.status(500).json({ success: false, error: "L'IA n'a pas pu répondre." });
   }
 });
 
+// Lancement du serveur
 if (require.main === module) {
   const port = process.env.PORT || 3000;
   app.listen(port, () => {
-    // eslint-disable-next-line no-console
-    console.log(`Example app listening on http://localhost:${port}`);
+    console.log(`Serveur démarré sur http://localhost:${port}`);
   });
 }
 
