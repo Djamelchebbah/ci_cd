@@ -58,10 +58,14 @@ jobs:
           tags: ghcr.io/djamelchebbah/ci_cd:latest
 
   # Étape 3 : Création de la Release automatique
+# Étape 3 : Création de la Release automatique
   create-release:
     runs-on: ubuntu-latest
     needs: build-image
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # AJOUTE CES DEUX LIGNES ICI :
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - name: Create Release
