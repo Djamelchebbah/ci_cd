@@ -57,6 +57,7 @@ build-image:
           push: true
           # On écrit le nom tout en minuscules ici :
           tags: ghcr.io/djamelchebbah/ci_cd:latest
+          
   # Étape 3 : Release (Optionnel pour GitHub)
   create-release:
     runs-on: ubuntu-latest
