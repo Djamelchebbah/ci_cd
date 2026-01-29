@@ -17,7 +17,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          # Pas de cache pour l'instant pour éviter l'erreur lockfile
 
       - name: Install dependencies
         run: npm install
@@ -34,7 +33,7 @@ jobs:
         run: node src/ai-test.js
 
   # Étape 2 : Build Image (Vers GitHub Registry)
-build-image:
+  build-image:
     runs-on: ubuntu-latest
     needs: test-and-validate
     permissions:
@@ -55,10 +54,11 @@ build-image:
         with:
           context: .
           push: true
-          # On écrit le nom tout en minuscules ici :
+          # Le nom est en minuscules pour Docker
           tags: ghcr.io/djamelchebbah/ci_cd:latest
 
-create-release:
+  # Étape 3 : Création de la Release automatique
+  create-release:
     runs-on: ubuntu-latest
     needs: build-image
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
